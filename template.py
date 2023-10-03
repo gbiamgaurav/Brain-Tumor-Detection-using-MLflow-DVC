@@ -24,6 +24,7 @@ list_of_files = [
     "requirements.txt",
     "setup.py",
     "notebooks/trials.ipynb",
+    "EDA/demo.ipynb",
     "final_model/demo.h5",
 
 ]
