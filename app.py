@@ -1,61 +1,59 @@
+import os
 import streamlit as st
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.models import load_model
-from brain_tumor.pipeline import prediction
+from io import BytesIO
+import base64
+from PIL import Image
+from brain_tumor.utils.main_utils import decodeImage
+from brain_tumor.pipeline.prediction import PredictionPipeline
 
-# Set Streamlit page title and favicon
-st.set_page_config(
-    page_title="Brain Tumor Image Classification WebApp",
-    page_icon="🥭",
-)
+os.putenv('LANG', 'en_US.UTF-8')
+os.putenv('LC_ALL', 'en_US.UTF-8')
 
-# Load the pre-trained model
-model = load_model("final_model/brain_model.h5")
+class ClientApp:
+    def __init__(self):
+        self.filename = "inputImage.jpg"
+        self.classifier = PredictionPipeline(self.filename)
 
-# Define class labels
-class_labels = {
-    0: "giloma",
-    1: "meningioma",
-    2: "notumor",
-    3: "pituitary",
+clApp = ClientApp()
 
-}
+st.title("Brain Tumor Classification Web App")
 
-# Define app title and header
-st.title("Brain Tumor Image Classifier")
-st.write("Upload an image of a brain to classify if it has a tumor or not")
+page = st.selectbox("Select a page:", ["Home", "Train", "Predict"])
 
-# Create a file uploader widget
-uploaded_image = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
+if page == "Home":
+    st.header("Home Page")
+    st.write("Welcome to the Brain Tumor Classification Web App.")
+    st.write("You can use the navigation bar on the left to access different pages.")
+elif page == "Train":
+    st.header("Train Page")
+    st.write("Click the button below to start training:")
+    if st.button("Train Model"):
+        os.system("python main.py")
+        st.success("Training done successfully!")
 
-# Display a placeholder for the prediction result
-prediction_result = st.empty()
-
-# Check if an image has been uploaded
-if uploaded_image is not None:
-    # Display the uploaded image
-    st.image(uploaded_image, caption="Uploaded Brain Image", use_column_width=True)
-
-    # Preprocess the image
-    img = image.load_img(uploaded_image, target_size=(180, 180))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-
-    # Make a prediction
-    result = model.predict(img_array)
-    class_index = np.argmax(result, axis=1)
-
-    # Determine whether the result is Healthy or Disease
-    prediction = "Tumor" if class_index[0] == 5 else "No Tumor"
-
-    # Display the prediction result in bold
-    prediction_result.markdown(f"**Prediction: {prediction}**")
-
-# Add some space and a footer
-st.write("\n\n")
-st.markdown(
-    "Made with ❤️ by Gaurav Bhattacharya\n"
+elif page == "Predict":
+    st.header("Predict Page")
+    uploaded_image = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
     
-)
+    if uploaded_image:
+        try:
+            # Open the image using Pillow
+            image = Image.open(uploaded_image)
+            st.image(image, caption="Uploaded Image", use_column_width=True)
+            
+            # Encode the image as bytes
+            with BytesIO() as buffer:
+                image.save(buffer, format="JPEG")
+                image_bytes = buffer.getvalue()
+            
+            if st.button("Predict"):
+                # Pass the base64-encoded image data to the decodeImage function
+                decodeImage(base64.b64encode(image_bytes), clApp.filename)
+                result = clApp.classifier.predict()
+                
+                # Display the prediction result in a single line
+                if result:
+                    st.write(f"Prediction Result is: {result[0]['image']}")
+
+        except Exception as e:
+            st.error(f"Error: {str(e)}")
