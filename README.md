@@ -1,5 +1,3 @@
-# Brain-Tumor-Detection-using-MLflow-DVC
-
 ## About Dataset
 
 ## What is a brain tumor?
@@ -13,6 +11,11 @@ The application of deep learning approaches in context to improve health diagnos
 
 ## Dataset Description:
 This dataset contains 7023 images of human brain MRI images which are classified into 4 classes: glioma - meningioma - no tumor and pituitary.
+
+## Webapp Demo:
+[brain tumor.webm](https://github.com/gbiamgaurav/Brain-Tumor-Detection-using-MLflow-DVC/assets/81230208/acb08ac1-5227-44e9-a5c6-e3d7de6f9f50)
+
+[Checkout the Webapp here](https://brain-tumor-detection-using-mlflow-dvc-792mqwjfhxn9zmrmg9yjrm.streamlit.app/)
 
 
 ## MFLOW commands to run
@@ -39,5 +42,18 @@ export `MLFLOW_TRACKING_PASSWORD`
 
 ```
 
+## Tech Stack used in this Project:
+
+Python
+
+Streamlit
+
+Pretrained_model = RESNET50 (https://keras.io/api/applications/resnet/#resnet50-function)
+
+MLFLOW (https://mlflow.org/)
+
+DVC (https://dvc.org/)
+
+DagsHub (https://dagshub.com/gbiamgaurav/Brain-Tumor-Detection-using-MLflow-DVC)
 
 
