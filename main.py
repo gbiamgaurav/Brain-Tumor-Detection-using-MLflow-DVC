@@ -2,7 +2,7 @@ from brain_tumor import logger
 from brain_tumor.pipeline.stage_data_ingestion import DataIngestionTrainingPipeline
 from brain_tumor.pipeline.stage_prepare_base_model import PrepareBaseModelTrainingPipeline
 from brain_tumor.pipeline.stage_training import ModelTrainingPipeline
-from brain_tumor.pipeline.stage_evalution import ModelEvaluationPipeline
+from brain_tumor.pipeline.stage_evaluation import ModelEvaluationPipeline
 
 
 STAGE_NAME = "Data Ingestion Stage"
